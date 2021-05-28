@@ -597,6 +597,8 @@ async def insert(query):
     try:
         if query._returning:
             row = await cursor.fetchone()
+            if row is None and query._on_conflict and query._on_conflict._action.upper() == 'IGNORE':
+                return None
             result = row[0]
         else:
             database = _query_db(query)
